@@ -5,6 +5,7 @@ namespace QAToolKit.Auth.Exceptions
     /// <summary>
     /// Keycloak unauthorized client exception
     /// </summary>
+    [Serializable]
     public class KeycloakUnauthorizedClientException : Exception
     {
         /// <summary>
