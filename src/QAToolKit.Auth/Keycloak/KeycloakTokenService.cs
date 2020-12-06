@@ -15,10 +15,10 @@ namespace QAToolKit.Auth
         private readonly string _clientId;
         private readonly string _secret;
         private string _accessToken = null;
-        private DateTimeOffset? _accessTokenValidity = null;
         private readonly string _assemblyName;
         private readonly string _assemblyVersion;
         private readonly string _impersonatedUsername;
+        private readonly bool _useImpersonation;
 
         public KeycloakTokenService(KeycloakOptions keycloakOptions)
         {
@@ -27,19 +27,16 @@ namespace QAToolKit.Auth
             _tokenEndpoint = keycloakOptions.TokenEndpoint;
             _clientId = keycloakOptions.ClientId;
             _secret = keycloakOptions.Secret;
+            _impersonatedUsername = keycloakOptions.UserName;
+            _useImpersonation = keycloakOptions.UseImpersonation;
 
             _assemblyName = typeof(KeycloakTokenService).Assembly.GetName().Name;
             _assemblyVersion = typeof(KeycloakTokenService).Assembly.GetName().Version.ToString();
-            _impersonatedUsername = keycloakOptions.UserName;
+
         }
 
         public async Task<string> GetAccessTokenAsync()
         {
-            if (IsAccessTokenValid())
-            {
-                return _accessToken;
-            }
-
             await PostTokenClientCredentials();
 
             return _accessToken;
@@ -59,21 +56,15 @@ namespace QAToolKit.Auth
                 new KeyValuePair<string, string>("client_secret", _secret)
             });
 
-            var now = DateTimeOffset.Now;
-
             var response = await _client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
                 dynamic body = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                if (string.IsNullOrEmpty(_impersonatedUsername))
+                if (!_useImpersonation)
                 {
-                    string at = body.access_token;
-                    int ei = body.expires_in;
-
-                    _accessToken = at;
-                    _accessTokenValidity = now.AddSeconds(ei);
+                    _accessToken = body.access_token;
                 }
                 else
                 {
@@ -101,11 +92,7 @@ namespace QAToolKit.Auth
                         {
                             dynamic content = JObject.Parse(contentStr);
 
-                            string at = content.access_token;
-                            int ei = content.expires_in;
-
-                            _accessToken = at;
-                            _accessTokenValidity = now.AddSeconds(ei);
+                            _accessToken = content.access_token;
                         }
                         else
                         {
@@ -122,17 +109,6 @@ namespace QAToolKit.Auth
             {
                 throw new KeycloakUnauthorizedClientException(await response.Content.ReadAsStringAsync());
             }
-        }
-
-        private bool IsAccessTokenValid(DateTimeOffset? now = null)
-        {
-            if (_accessToken == null || !_accessTokenValidity.HasValue)
-                return false;
-
-            if (!now.HasValue)
-                now = DateTimeOffset.Now;
-
-            return _accessTokenValidity.Value.AddSeconds(-TokenValidityOffsetSeconds) >= now;
         }
 
         private HttpRequestMessage CreateBasicTokenEndpointRequest()

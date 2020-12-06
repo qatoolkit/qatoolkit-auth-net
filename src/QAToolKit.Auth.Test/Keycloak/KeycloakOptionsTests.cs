@@ -27,6 +27,19 @@ namespace QAToolKit.Auth.Test.Keycloak
             Assert.Equal("12345", options.ClientId);
             Assert.Equal("12345", options.Secret);
             Assert.Equal(new Uri("https://api.com/token"), options.TokenEndpoint);
+            Assert.True(options.UseImpersonation);
+        }
+
+        [Fact]
+        public void KeycloakOptionsNoImpersonationTest_Successful()
+        {
+            var options = new KeycloakOptions();
+            options.AddClientCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345");
+
+            Assert.Equal("12345", options.ClientId);
+            Assert.Equal("12345", options.Secret);
+            Assert.Equal(new Uri("https://api.com/token"), options.TokenEndpoint);
+            Assert.False(options.UseImpersonation);
         }
 
         [Theory]
