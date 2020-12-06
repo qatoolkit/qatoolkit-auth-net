@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QAToolKit.Auth", "src\QAToolKit.Auth\QAToolKit.Auth.csproj", "{120C5172-DDCA-442C-BFAB-2101519F6F2D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QAToolKit.Auth.Test", "src\QAToolKit.Auth.Test\QAToolKit.Auth.Test.csproj", "{6CBE7B2B-2CCC-4B2C-BEB1-7F81D8AEC3F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{120C5172-DDCA-442C-BFAB-2101519F6F2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{120C5172-DDCA-442C-BFAB-2101519F6F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{120C5172-DDCA-442C-BFAB-2101519F6F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{120C5172-DDCA-442C-BFAB-2101519F6F2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CBE7B2B-2CCC-4B2C-BEB1-7F81D8AEC3F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CBE7B2B-2CCC-4B2C-BEB1-7F81D8AEC3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CBE7B2B-2CCC-4B2C-BEB1-7F81D8AEC3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CBE7B2B-2CCC-4B2C-BEB1-7F81D8AEC3F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E5E8D58-9647-412F-A244-F392140B76A7}
+	EndGlobalSection
+EndGlobal

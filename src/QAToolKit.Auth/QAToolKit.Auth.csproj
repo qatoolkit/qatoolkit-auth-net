@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LangVersion>latest</LangVersion>
+		<ProjectGuid>120c5172-ddca-442c-bfab-2101519f6f2d</ProjectGuid>
+
+		<!-- NuGet Metadata -->
+		<IsPackable>true</IsPackable>
+		<PackageVersion>$(Version)</PackageVersion>
+		<PackageId>QAToolKit.Auth</PackageId>
+		<Authors>Miha Jakovac</Authors>
+		<Description>
+			QAToolKit.Auth library.
+		</Description>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/qatoolkit/qatoolkit-auth-net</PackageProjectUrl>
+		<PackageIcon>qatoolkit-64x64.png</PackageIcon>
+		<RepositoryUrl>https://github.com/qatoolkit/qatoolkit-auth-net</RepositoryUrl>
+		<PackageTags>qatoolkit-auth-net;.net;c#;f#;dotnet;netstandard;net5;authentication;authorization</PackageTags>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\qatoolkit-64x64.png" Pack="true" PackagePath="\" />
+		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+		<None Include="..\..\README.md" Pack="false" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	  <PackageReference Include="QAToolKit.Core" Version="0.3.2" />
+	</ItemGroup>
+</Project>
