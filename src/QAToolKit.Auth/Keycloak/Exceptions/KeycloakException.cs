@@ -5,6 +5,7 @@ namespace QAToolKit.Auth.Exceptions
     /// <summary>
     /// Keycloak exception
     /// </summary>
+    [Serializable]
     public class KeycloakException : Exception
     {
         /// <summary>

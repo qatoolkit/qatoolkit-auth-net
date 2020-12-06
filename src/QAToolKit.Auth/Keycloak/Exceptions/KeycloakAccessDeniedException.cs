@@ -5,6 +5,7 @@ namespace QAToolKit.Auth.Exceptions
     /// <summary>
     /// Keycloak access denied exception
     /// </summary>
+    [Serializable]
     public class KeycloakAccessDeniedException : Exception
     {
         /// <summary>
