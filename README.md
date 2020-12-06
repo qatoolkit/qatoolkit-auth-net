@@ -1,72 +1,79 @@
 # QAToolKit Authentication library
-[![Build .NET Library](https://github.com/qatoolkit/qatoolkit-auth-net/workflows/.NET%20Core/badge.svg?branch=main)](https://github.com/qatoolkit/qatoolkit-auth-net/actions)
+[![Build .NET Library](https://github.com/qatoolkit/qatoolkit-auth-net/workflows/Build%20.NET%20Library/badge.svg)](https://github.com/qatoolkit/qatoolkit-auth-net/actions)
 [![CodeQL](https://github.com/qatoolkit/qatoolkit-auth-net/workflows/CodeQL%20Analyze/badge.svg)](https://github.com/qatoolkit/qatoolkit-auth-net/security/code-scanning)
 [![Sonarcloud Quality gate](https://github.com/qatoolkit/qatoolkit-auth-net/workflows/Sonarqube%20Analyze/badge.svg)](https://sonarcloud.io/dashboard?id=qatoolkit_qatoolkit-auth-net)
 [![NuGet package](https://img.shields.io/nuget/v/QAToolKit.Auth?label=QAToolKit.Auth)](https://www.nuget.org/packages/QAToolKit.Auth/)
 
 ## Description
-`QAToolKit.Auth` is a .NET Standard 2.1 library, that contains core objects and functions of the toolkit. It's normally not used as a standalone library but is a dependency for other QAToolKit libraries.
+`QAToolKit.Auth` is a .NET Standard 2.1 library, that retrieves the JWT access tokens from different identity providers.
+
+Currently it supports next Identity providers and Oauth2 flows:
+- `Keycloak`: Library supports Keycloak [client credentials flow](https://tools.ietf.org/html/rfc6749#section-4.4) or `Protection API token (PAT)` flow. Additionally you can replace the PAT with user token by exchanging the token.
 
 Supported .NET frameworks and standards: `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net5.0`
 
-## 1. HttpRequest functions
-HttpRequest object is one of the main objects that is shared among the QA Toolkit libraries. `QAToolKit.Core` library contains `HttpRequestTools` which can manipulate the HttpRequest object.
+## 1. Keycloak support
 
-For example URL, header and Body generators: `HttpRequestUrlGenerator`, `HttpRequestBodyGenerator` and `HttpRequestHeaderGenerator`.
+Keycloak support is limited to the `client credential` or `Protection API token (PAT)` flow in combination with `token exchange`.
 
-### 1.1. HttpRequestUrlGenerator
-This is a method that will accept key/value pairs for replacement of placeholders in the `HttpRequest` object. Replacement object are stored in a dictionary, which `prevents mistakes with duplicated keys`.
-Also dictionary keys are case insensitive when looking for values to replace.
+### 1.1. Client credential flow
 
-```csharp
-options.AddReplacementValues(new Dictionary<string, object> {
-    {
-        "version",
-        "1"
-    },
-    {
-        "parentId",
-        "4"
-    }
-});
+A mocked request below is sent to the Keycloak endpoint, and the PAT token is retrieved:
+
+```bash
+curl -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d 'grant_type=client_credentials&client_id=${client_id}&client_secret=${client_secret}' \
+    "http://localhost:8080/auth/realms/${realm_name}/protocol/openid-connect/token"
 ```
 
-In the example above we say: "Replace `{version}` and {parentId} placeholders in Path and URL parameters and JSON body models."
+Read [more](https://www.keycloak.org/docs/latest/authorization_services/#_service_protection_whatis_obtain_pat) here in the Keycloak documentation.
 
-In other words, if you have a test API endpoint like this: https://api.demo.com/v{version}/categories?parent={parentId} that will be set to https://api.demo.com/v1/categories?parent=4.
-
-That, does not stop there, you can also populate JSON request bodies.
-
-### 1.2. HttpRequestBodyGenerator
-
-For example if you set the replacement value to stringified json:
+Now let's retrive a PAT token with QAToolKit Auth libraray:
 
 ```csharp
-options.AddReplacementValues(new Dictionary<string, object> {
-    {
-        "id",
-        "100"
-    },
-    {
-        "category",
-        "{\"id\":1,\"name\":\"dog\"}"
-    }
+var auth = new KeycloakAuthenticator(options =>
+{
+    options.AddClientCredentialFlowParameters(
+                new Uri("https://my.keycloakserver.com/auth/realms/realmX/protocol/openid-connect/token"), 
+                "my_client",
+                "client_secret");
 });
+
+var token = await auth.GetAccessToken();
 ```
-than the parent model object will be replaced with the stringified json above.
 
-What happend behind the curtains, the model proxy class is generated, which is then used to Deserialized the JSON into the object.
-`HttpRequest` list is then scanned and values are properly replaced.
+### 1.2. Client credential flow with token exchange
 
-### 1.3. HttpRequestHeaderGenerator
+If you want to replace the PAT token with user token, you can additionally specify a username. A mocked request looks like this:
 
-To-do
+```bash
+curl -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d 'grant_type=urn:ietf:params:oauth:grant-type:token-exchange&client_id=${client_id}&client_secret=${client_secret}&subject_token=eyJhbGciOiJI...&requested_subject=myuser@users.com' \
+    "http://localhost:8080/auth/realms/${realm_name}/protocol/openid-connect/token"
+```
+
+As you see it has a different `grant_type` and additionally 2 more properties in the URL; PAT token (`subject_token`) and userName for which we want to replace the token (`requested_subject`).
+
+```csharp
+var auth = new KeycloakAuthenticator(options =>
+{
+    options.AddClientCredentialFlowParameters(
+                new Uri("https://my.keycloakserver.com/auth/realms/realmX/protocol/openid-connect/token"), 
+                "my_client",
+                "client_secret"); 
+    options.AddUserNameForImpersonation("myuser@users.com");
+});
+
+var token = await auth.GetAccessToken();
+```
 
 ## To-do
 
 - **This library is an early alpha version**
-- `HttpRequestHeaderGenerator` is missing implementation.
-- `HttpRequestBodyGenerator` need to cover the whole spectrum of object tipes. Currently it's missing arrays, and nested objects. It's on the priority list.
+- Add more providers identity providers.
+- Add more OAuth2 flows.
 
 ## License
 

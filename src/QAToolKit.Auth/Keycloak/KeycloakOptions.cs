@@ -23,6 +23,10 @@ namespace QAToolKit.Auth
         /// Username / email of the user for which you want to retrieve the access token
         /// </summary>
         public string UserName { get; set; }
+        /// <summary>
+        /// If username is set use impersonation
+        /// </summary>
+        public bool UseImpersonation { get; private set; } = false;
 
         /// <summary>
         /// Add client credential flow parameters
@@ -57,6 +61,7 @@ namespace QAToolKit.Auth
                 throw new ArgumentNullException($"{nameof(userName)} is null.");
 
             UserName = userName;
+            UseImpersonation = true;
             return this;
         }
     }
