@@ -9,7 +9,6 @@ namespace QAToolKit.Auth
 {
     internal class KeycloakTokenService : IDisposable
     {
-        private const int TokenValidityOffsetSeconds = 15;
         private readonly HttpClient _client;
         private readonly Uri _tokenEndpoint;
         private readonly string _clientId;
@@ -121,7 +120,7 @@ namespace QAToolKit.Auth
             return request;
         }
 
-        private void SetRequestAcceptHeader(HttpRequestMessage req)
+        private static void SetRequestAcceptHeader(HttpRequestMessage req)
         {
             req.Headers.Add("Accept", "application/json");
         }
