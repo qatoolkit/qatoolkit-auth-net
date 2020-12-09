@@ -1,14 +1,13 @@
 ﻿using NSubstitute;
-using QAToolKit.Auth.Keycloak;
+using QAToolKit.Auth.IdentityServer4;
 using QAToolKit.Core.Interfaces;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace QAToolKit.Auth.Test.Keycloak
+namespace QAToolKit.Auth.Test.IdentityServer4
 {
-    public class KeycloakAuthenticatorTests
+    public class IdentityServer4AuthenticatorTests
     {
         [Fact]
         public async Task CreateAuthenticatonServiceTest_Success()
@@ -29,14 +28,14 @@ namespace QAToolKit.Auth.Test.Keycloak
         }
 
         [Fact]
-        public void CreateKeycloakOptionsTest_Success()
+        public void CreateIdentityServer4OptionsTest_Success()
         {
-            var options = new KeycloakOptions();
+            var options = new IdentityServer4Options();
             options.AddClientCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345");
 
-            var keycloakOptions = Substitute.For<Action<KeycloakOptions>>();
-            keycloakOptions.Invoke(options);
-            Assert.Single(keycloakOptions.ReceivedCalls());
+            var id4Options = Substitute.For<Action<IdentityServer4Options>>();
+            id4Options.Invoke(options);
+            Assert.Single(id4Options.ReceivedCalls());
         }
     }
 }

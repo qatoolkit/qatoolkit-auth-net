@@ -2,12 +2,12 @@
 using System;
 using System.Threading.Tasks;
 
-namespace QAToolKit.Auth
+namespace QAToolKit.Auth.Keycloak
 {
     /// <summary>
     /// Keycloak authenticator to retrieve the AccessToken for a username.
     /// </summary>
-    public class KeycloakAuthenticator : IAuthenticationService
+    public sealed class KeycloakAuthenticator : IAuthenticationService
     {
         private readonly KeycloakTokenService _keycloakTokenService;
 
@@ -30,6 +30,16 @@ namespace QAToolKit.Auth
         public async Task<string> GetAccessToken()
         {
             return await _keycloakTokenService.GetAccessTokenAsync();
+        }
+
+        /// <summary>
+        /// Exchange client credentials token for user token
+        /// </summary>
+        /// <param name="userName">User name you want the token for</param>
+        /// <returns></returns>
+        public async Task<string> ExchangeForUserToken(string userName)
+        {
+            return await _keycloakTokenService.ExchangeTokenForUserToken(userName);
         }
     }
 }

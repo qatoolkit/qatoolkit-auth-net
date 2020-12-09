@@ -6,13 +6,13 @@ namespace QAToolKit.Auth.Exceptions
     /// Keycloak unauthorized client exception
     /// </summary>
     [Serializable]
-    public class KeycloakUnauthorizedClientException : Exception
+    public class UnauthorizedClientException : Exception
     {
         /// <summary>
         /// Keycloak unauthorized client exception
         /// </summary>
         /// <param name="message"></param>
-        public KeycloakUnauthorizedClientException(string message) : base(message)
+        public UnauthorizedClientException(string message) : base(message)
         {
         }
 
@@ -21,7 +21,7 @@ namespace QAToolKit.Auth.Exceptions
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public KeycloakUnauthorizedClientException(string message, Exception innerException) : base(message, innerException)
+        public UnauthorizedClientException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

@@ -2,14 +2,14 @@
 using System;
 using Xunit;
 
-namespace QAToolKit.Auth.Test.Keycloak.Exceptions
+namespace QAToolKit.Auth.Test.Exceptions
 {
     public class KeycloakExceptionTests : Exception
     {
         [Fact]
         public void CreateExceptionTest_Successful()
         {
-            var exception = new KeycloakException("my error");
+            var exception = new AuthenticationException("my error");
 
             Assert.Equal("my error", exception.Message);
         }
@@ -18,7 +18,7 @@ namespace QAToolKit.Auth.Test.Keycloak.Exceptions
         public void CreateExceptionWithInnerExceptionTest_Successful()
         {
             var innerException = new Exception("Inner");
-            var exception = new KeycloakException("my error", innerException);
+            var exception = new AuthenticationException("my error", innerException);
 
             Assert.Equal("my error", exception.Message);
             Assert.Equal("Inner", innerException.Message);
