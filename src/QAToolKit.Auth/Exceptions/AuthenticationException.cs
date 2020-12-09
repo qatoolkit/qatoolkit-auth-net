@@ -3,25 +3,25 @@
 namespace QAToolKit.Auth.Exceptions
 {
     /// <summary>
-    /// Keycloak access denied exception
+    /// Keycloak exception
     /// </summary>
     [Serializable]
-    public class KeycloakAccessDeniedException : Exception
+    public class AuthenticationException : Exception
     {
         /// <summary>
-        /// Keycloak access denied exception
+        /// Keycloak exception
         /// </summary>
         /// <param name="message"></param>
-        public KeycloakAccessDeniedException(string message) : base(message)
+        public AuthenticationException(string message) : base(message)
         {
         }
 
         /// <summary>
-        /// Keycloak access denied exception
+        /// Keycloak exception
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public KeycloakAccessDeniedException(string message, Exception innerException) : base(message, innerException)
+        public AuthenticationException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
