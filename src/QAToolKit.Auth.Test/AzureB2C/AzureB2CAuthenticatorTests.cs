@@ -1,14 +1,13 @@
 ﻿using NSubstitute;
-using QAToolKit.Auth.Keycloak;
+using QAToolKit.Auth.AzureB2C;
 using QAToolKit.Core.Interfaces;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace QAToolKit.Auth.Test.Keycloak
+namespace QAToolKit.Auth.Test.AzureB2C
 {
-    public class KeycloakAuthenticatorTests
+    public class AzureB2CAuthenticatorTests
     {
         [Fact]
         public async Task CreateAuthenticatonServiceTest_Success()
@@ -29,14 +28,14 @@ namespace QAToolKit.Auth.Test.Keycloak
         }
 
         [Fact]
-        public void CreateKeycloakOptionsTest_Success()
+        public void CreateAzureB2COptionsTest_Success()
         {
-            var options = new KeycloakOptions();
+            var options = new AzureB2COptions();
             options.AddClientCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345");
 
-            var keycloakOptions = Substitute.For<Action<KeycloakOptions>>();
-            keycloakOptions.Invoke(options);
-            Assert.Single(keycloakOptions.ReceivedCalls());
+            var azureB2COptions = Substitute.For<Action<AzureB2COptions>>();
+            azureB2COptions.Invoke(options);
+            Assert.Single(azureB2COptions.ReceivedCalls());
         }
     }
 }

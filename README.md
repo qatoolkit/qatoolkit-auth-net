@@ -9,6 +9,8 @@
 
 Currently it supports next Identity providers and Oauth2 flows:
 - `Keycloak`: Library supports Keycloak [client credentials flow](https://tools.ietf.org/html/rfc6749#section-4.4) or `Protection API token (PAT)` flow. Additionally you can replace the PAT with user token by exchanging the token.
+- `Azure B2C`: Library supports [AzureB2C](https://azure.microsoft.com/en-us/services/active-directory/external-identities/b2c/) client credentials flow.
+- `Identity Server 4`: Library supports [Identity Server 4](https://identityserver.io/) client credentials [flow](https://identityserver4.readthedocs.io/en/latest/quickstarts/1_client_credentials.html)
 
 Supported .NET frameworks and standards: `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net5.0`
 
@@ -43,7 +45,7 @@ var auth = new KeycloakAuthenticator(options =>
 var token = await auth.GetAccessToken();
 ```
 
-### 1.2. Client credential flow with token exchange
+### 1.2. Exchange token for user token
 
 If you want to replace the PAT token with user token, you can additionally specify a username. A mocked request looks like this:
 
@@ -63,17 +65,53 @@ var auth = new KeycloakAuthenticator(options =>
                 new Uri("https://my.keycloakserver.com/auth/realms/realmX/protocol/openid-connect/token"), 
                 "my_client",
                 "client_secret"); 
-    options.AddUserNameForImpersonation("myuser@users.com");
 });
 
+//Get client credentials flow access token
+var token = await auth.GetAccessToken();
+//Replace client credentials flow token for user access token
+var userToken = await auth.ExchangeForUserToken("myuser@email.com");
+```
+
+## 2. Identity Server 4 support
+
+Under the hood it's the same code that retrieves the `client credentials flow` access token, but authenticator is explicit for Identity Server 4.
+
+```csharp
+var auth = new IdentityServer4Authenticator(options =>
+{
+    options.AddClientCredentialFlowParameters(
+            new Uri("https://<myserver>/token"),
+            "my_client"
+            "<client_secret>");
+});
+            
+var token = await auth.GetAccessToken();
+```
+
+## 3. Azure B2C support
+
+Under the hood it's the same code that retrieves the `client credentials flow` access token, but authenticator is explicit for Azure B2C.
+
+Azure B2C client credentials flow needs a defined scope which is usually `https://graph.windows.net/.default`.
+
+```csharp
+var auth = new AzureB2CAuthenticator(options =>
+{
+    options.AddClientCredentialFlowParameters(
+            new Uri("https://login.microsoftonline.com/<tenantID>/oauth2/v2.0/token"),
+            "<clientId>"
+            "<clientSecret>"
+            new string[] { "https://graph.windows.net/.default" });
+});
+            
 var token = await auth.GetAccessToken();
 ```
 
 ## To-do
 
 - **This library is an early alpha version**
-- Add more providers identity providers.
-- Add more OAuth2 flows.
+- Add Password flows to AzurteB2C and IdentityServer4.
 
 ## License
 
