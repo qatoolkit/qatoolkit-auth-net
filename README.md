@@ -3,6 +3,7 @@
 [![CodeQL](https://github.com/qatoolkit/qatoolkit-auth-net/workflows/CodeQL%20Analyze/badge.svg)](https://github.com/qatoolkit/qatoolkit-auth-net/security/code-scanning)
 [![Sonarcloud Quality gate](https://github.com/qatoolkit/qatoolkit-auth-net/workflows/Sonarqube%20Analyze/badge.svg)](https://sonarcloud.io/dashboard?id=qatoolkit_qatoolkit-auth-net)
 [![NuGet package](https://img.shields.io/nuget/v/QAToolKit.Auth?label=QAToolKit.Auth)](https://www.nuget.org/packages/QAToolKit.Auth/)
+[![Discord](https://img.shields.io/discord/787220825127780354?color=%23267CB9&label=Discord%20chat)](https://discord.com/invite/tu3WDV5Z?utm_source=Discord%20Widget&utm_medium=Connect)
 
 ## Description
 `QAToolKit.Auth` is a .NET Standard 2.1 library, that retrieves the JWT access tokens from different identity providers.
@@ -12,7 +13,13 @@ Currently it supports next Identity providers and Oauth2 flows:
 - `Azure B2C`: Library supports [AzureB2C](https://azure.microsoft.com/en-us/services/active-directory/external-identities/b2c/) client credentials flow.
 - `Identity Server 4`: Library supports [Identity Server 4](https://identityserver.io/) client credentials [flow](https://identityserver4.readthedocs.io/en/latest/quickstarts/1_client_credentials.html)
 
-Supported .NET frameworks and standards: `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net5.0`
+Supported .NET frameworks and standards: `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net5.0`.
+
+Get in touch with me on:
+
+[![Discord](https://img.shields.io/discord/787220825127780354?color=%23267CB9&label=Discord%20chat)](https://discord.com/invite/tu3WDV5Z?utm_source=Discord%20Widget&utm_medium=Connect)
+
+**Please note**: _The token expiration time is read from the tokens and is used to minimize the hits on the token endpoint. Another benefit is faster tests :)._
 
 ## 1. Keycloak support
 
