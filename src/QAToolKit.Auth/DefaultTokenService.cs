@@ -9,14 +9,17 @@ namespace QAToolKit.Auth
 {
     internal abstract class DefaultTokenService
     {
+        private const int TokenValidityOffsetSeconds = 15;
         protected readonly HttpClient _client;
         protected readonly Uri _tokenEndpoint;
         protected readonly string _clientId;
         protected readonly string _secret;
         protected readonly string _assemblyName;
         protected readonly string _assemblyVersion;
-        protected string _accessToken = null;
+        
         protected string _clientCredentialsToken = null;
+        private DateTimeOffset? _clientCredentialsTokenValidity = null;
+
         protected string[] _scopes = null;
 
         internal DefaultTokenService(DefaultOptions defaultOptions)
@@ -34,6 +37,11 @@ namespace QAToolKit.Auth
 
         public virtual async Task<string> GetAccessTokenAsync()
         {
+            if (IsAccessTokenValid())
+            {
+                return _clientCredentialsToken;
+            }
+
             await GetClientCredentialsToken();
 
             return _clientCredentialsToken;
@@ -67,11 +75,22 @@ namespace QAToolKit.Auth
                 dynamic body = JObject.Parse(await response.Content.ReadAsStringAsync());
 
                 _clientCredentialsToken = body.access_token;
+                int expiresIn = body.expires_in;
+
+                _clientCredentialsTokenValidity = DateTimeOffset.Now.AddSeconds(expiresIn);
 
                 return;
             }
 
             throw new UnauthorizedClientException(await response.Content.ReadAsStringAsync());
+        }
+
+        private bool IsAccessTokenValid()
+        {
+            if (_clientCredentialsToken == null || !_clientCredentialsTokenValidity.HasValue)
+                return false;
+
+            return _clientCredentialsTokenValidity.Value.AddSeconds(-TokenValidityOffsetSeconds) >= DateTimeOffset.Now;
         }
 
         protected HttpRequestMessage CreateBasicTokenEndpointRequest()

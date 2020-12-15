@@ -9,11 +9,20 @@ namespace QAToolKit.Auth.Keycloak
 {
     internal class KeycloakTokenService : DefaultTokenService
     {
+        private const int TokenValidityOffsetSeconds = 15;
+        private readonly string AccessToken = null;
+        private DateTimeOffset? AccessTokenValidity = null;
+
         public KeycloakTokenService(KeycloakOptions keycloakOptions) : base(keycloakOptions)
         { }
 
         internal async Task<string> ExchangeTokenForUserToken(string userName)
         {
+            if (IsAccessTokenValid())
+            {
+                return AccessToken;
+            }
+
             var impersonatedTokenRequest = CreateBasicTokenEndpointRequest();
 
             if (impersonatedTokenRequest == null)
@@ -36,9 +45,12 @@ namespace QAToolKit.Auth.Keycloak
             {
                 if (!string.IsNullOrEmpty(contentStr))
                 {
-                    dynamic content = JObject.Parse(contentStr);
+                    dynamic body = JObject.Parse(contentStr);
+                    int expiresIn = body.expires_in;
 
-                    return content.access_token;
+                    AccessTokenValidity = DateTimeOffset.Now.AddSeconds(expiresIn);
+
+                    return body.access_token;
                 }
                 else
                 {
@@ -49,6 +61,14 @@ namespace QAToolKit.Auth.Keycloak
             {
                 throw new AccessDeniedException(contentStr);
             }
+        }
+
+        private bool IsAccessTokenValid()
+        {
+            if (AccessToken == null || !AccessTokenValidity.HasValue)
+                return false;
+
+            return AccessTokenValidity.Value.AddSeconds(-TokenValidityOffsetSeconds) >= DateTimeOffset.Now;
         }
     }
 }
