@@ -10,7 +10,7 @@ namespace QAToolKit.Auth.Test.AzureB2C
     public class AzureB2CAuthenticatorTests
     {
         [Fact]
-        public async Task CreateAuthenticatonServiceTest_Success()
+        public async Task CreateAuthenticatorServiceTest_Success()
         {
             var authenticator = Substitute.For<IAuthenticationService>();
             await authenticator.GetAccessToken();
@@ -18,7 +18,7 @@ namespace QAToolKit.Auth.Test.AzureB2C
         }
 
         [Fact]
-        public async Task CreateAuthenticatonServiceWithReturnsTest_Success()
+        public async Task CreateAuthenticatorServiceWithReturnsTest_Success()
         {
             var authenticator = Substitute.For<IAuthenticationService>();
             authenticator.GetAccessToken().Returns(args => "12345");
@@ -32,6 +32,18 @@ namespace QAToolKit.Auth.Test.AzureB2C
         {
             var options = new AzureB2COptions();
             options.AddClientCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345");
+
+            var azureB2COptions = Substitute.For<Action<AzureB2COptions>>();
+            azureB2COptions.Invoke(options);
+            Assert.Single(azureB2COptions.ReceivedCalls());
+        }
+        
+        [Fact]
+        public void CreateAzureB2CROPCOptionsTest_Success()
+        {
+            var options = new AzureB2COptions();
+            options.AddResourceOwnerPasswordCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345",
+                "user", "pass");
 
             var azureB2COptions = Substitute.For<Action<AzureB2COptions>>();
             azureB2COptions.Invoke(options);
