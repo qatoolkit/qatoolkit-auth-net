@@ -37,5 +37,17 @@ namespace QAToolKit.Auth.Test.IdentityServer4
             id4Options.Invoke(options);
             Assert.Single(id4Options.ReceivedCalls());
         }
+        
+        [Fact]
+        public void CreateIdentityServer4ROPCOptionsTest_Success()
+        {
+            var options = new IdentityServer4Options();
+            options.AddResourceOwnerPasswordCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345",
+                "user", "pass");
+
+            var id4Options = Substitute.For<Action<IdentityServer4Options>>();
+            id4Options.Invoke(options);
+            Assert.Single(id4Options.ReceivedCalls());
+        }
     }
 }

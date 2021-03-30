@@ -38,5 +38,17 @@ namespace QAToolKit.Auth.Test.Keycloak
             keycloakOptions.Invoke(options);
             Assert.Single(keycloakOptions.ReceivedCalls());
         }
+        
+        [Fact]
+        public void CreateKeycloakROPCOptionsTest_Success()
+        {
+            var options = new KeycloakOptions();
+            options.AddResourceOwnerPasswordCredentialFlowParameters(new Uri("https://api.com/token"), "12345", "12345",
+                "user","pass");
+
+            var keycloakOptions = Substitute.For<Action<KeycloakOptions>>();
+            keycloakOptions.Invoke(options);
+            Assert.Single(keycloakOptions.ReceivedCalls());
+        }
     }
 }

@@ -14,22 +14,29 @@ namespace QAToolKit.Auth
         protected readonly Uri _tokenEndpoint;
         protected readonly string _clientId;
         protected readonly string _secret;
+        protected readonly string _userName;
+        protected readonly string _password;
         protected readonly string _assemblyName;
         protected readonly string _assemblyVersion;
         
         protected string _clientCredentialsToken = null;
         private DateTimeOffset? _clientCredentialsTokenValidity = null;
 
+        private DefaultOptions _defaultOptions;
+
         protected string[] _scopes = null;
 
         internal DefaultTokenService(DefaultOptions defaultOptions)
         {
+            _defaultOptions = defaultOptions;
             _client = new HttpClient();
 
             _tokenEndpoint = defaultOptions.TokenEndpoint;
             _clientId = defaultOptions.ClientId;
             _secret = defaultOptions.Secret;
             _scopes = defaultOptions.Scopes;
+            _userName = defaultOptions.UserName;
+            _password = defaultOptions.Password;
 
             _assemblyName = typeof(DefaultTokenService).Assembly.GetName().Name;
             _assemblyVersion = typeof(DefaultTokenService).Assembly.GetName().Version.ToString();
@@ -42,7 +49,14 @@ namespace QAToolKit.Auth
                 return _clientCredentialsToken;
             }
 
-            await GetClientCredentialsToken();
+            if (_defaultOptions.FlowType == FlowType.ClientCredentialFlow)
+            {
+                await GetClientCredentialsToken();
+            }
+            else if (_defaultOptions.FlowType == FlowType.ResourceOwnerPasswordCredentialFlow)
+            {
+                await GetResourceOwnerPasswordCredentialsToken(!string.IsNullOrEmpty(_defaultOptions.Secret));
+            }
 
             return _clientCredentialsToken;
         }
@@ -60,6 +74,50 @@ namespace QAToolKit.Auth
                 new KeyValuePair<string, string>("client_id", _clientId),
                 new KeyValuePair<string, string>("client_secret", _secret)
             };
+
+            if (_scopes != null)
+            {
+                pairs.Add(new KeyValuePair<string, string>("scope", string.Join(",", _scopes)));
+            }
+
+            request.Content = new FormUrlEncodedContent(pairs);
+
+            var response = await _client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                dynamic body = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                _clientCredentialsToken = body.access_token;
+                int expiresIn = body.expires_in;
+
+                _clientCredentialsTokenValidity = DateTimeOffset.Now.AddSeconds(expiresIn);
+
+                return;
+            }
+
+            throw new UnauthorizedClientException(await response.Content.ReadAsStringAsync());
+        }
+        
+        private async Task GetResourceOwnerPasswordCredentialsToken(bool useClientSecret = true)
+        {
+            var request = CreateBasicTokenEndpointRequest();
+
+            if (request == null)
+                return;
+
+            var pairs = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("grant_type", "password"),
+                new KeyValuePair<string, string>("client_id", _clientId),
+                new KeyValuePair<string, string>("username", _userName),
+                new KeyValuePair<string, string>("password", _password)
+            };
+
+            if (useClientSecret)
+            {
+                pairs.Add(new KeyValuePair<string, string>("client_secret", _secret));
+            }
 
             if (_scopes != null)
             {
