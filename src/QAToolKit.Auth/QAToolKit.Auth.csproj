@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net7.0</TargetFrameworks>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>latest</LangVersion>
 		<ProjectGuid>120c5172-ddca-442c-bfab-2101519f6f2d</ProjectGuid>
@@ -19,7 +19,7 @@
 		<PackageProjectUrl>https://github.com/qatoolkit/qatoolkit-auth-net</PackageProjectUrl>
 		<PackageIcon>qatoolkit-64x64.png</PackageIcon>
 		<RepositoryUrl>https://github.com/qatoolkit/qatoolkit-auth-net</RepositoryUrl>
-		<PackageTags>qatoolkit-auth-net;.net;c#;f#;dotnet;netstandard;net6;authentication;authorization</PackageTags>
+		<PackageTags>qatoolkit-auth-net;.net;c#;f#;dotnet;netstandard;net7;authentication;authorization</PackageTags>
 		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
 	
@@ -35,7 +35,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	  <PackageReference Include="QAToolKit.Core" Version="0.3.13" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	  <PackageReference Include="QAToolKit.Core" Version="0.3.14" />
 	</ItemGroup>
 </Project>
