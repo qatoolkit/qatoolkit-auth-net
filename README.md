@@ -19,7 +19,7 @@ Currently it supports next Identity providers and Oauth2 flows:
   - [client credentials flow](https://identityserver4.readthedocs.io/en/latest/quickstarts/1_client_credentials.html)
   - [resource owner password]()  
 
-Supported .NET frameworks and standards: `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net5.0`.
+Supported .NET frameworks and standards: `netstandard2.0`, `netstandard2.1`, `net7.0`.
 
 Get in touch with me on:
 
@@ -178,7 +178,7 @@ var token = await auth.GetAccessToken();
 
 MIT License
 
-Copyright (c) 2020-2021 Miha Jakovac
+Copyright (c) 2020-2023 Miha Jakovac
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
